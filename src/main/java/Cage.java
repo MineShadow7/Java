@@ -1,23 +1,48 @@
 import static java.lang.System.*;
+import java.util.Random;
 
 public class Cage {
-    private static Animal animal = new Animal();
-    public static boolean isEmpty = false;
+    public Animal animal;
+    public boolean isEmpty;
+    private Random random = new Random();
 
     public Cage() {
-        isEmpty = false;
-        animal.setAclass("Default Class");
-        animal.setCarnivore(false);
-        animal.setName("Default Name");
-        animal.setType("Default Type");
-        animal.setVoice("Default Voice");
+        isEmpty = random.nextBoolean();
+        if (!isEmpty) {
+            animal = new Animal();
+            int randname = random.nextInt(5);
+            int randtype = random.nextInt(2);
+            int randclass = random.nextInt(3);
+            animal.GenerateStats(randname, randtype, randclass);
+        }
+    }
+    public boolean getisEmpty(){ return isEmpty; }
+    public void setIsEmpty(boolean isEmpty1) { isEmpty = isEmpty1; };
+    public Cage(int randname, int randtype, int randclass) {
+        isEmpty = random.nextBoolean();
+        if (!isEmpty) {
+            animal = new Animal();
+            animal.GenerateStats(randname, randtype, randclass);
+        }
     }
 
-    public static void print() {
-        if (isEmpty == false) {
-            out.println(animal);
-        }else {
-            out.println("Cage Empty");
+    public void addAnimal(Animal newAnimal) throws CageFullException {
+        if (!isEmpty) throw new CageFullException(true, "Cage can't be full when adds new animal");
+        if (isEmpty) {
+            animal = newAnimal;
+            isEmpty = false;
+            System.out.println("Done!");
+        }
+    }
+
+    @Override
+    public String toString() {
+        if (!isEmpty) {
+            return "Cage{" +
+                    "random=" + animal.toString() +
+                    '}';
+        } else {
+            return "Cage is empty.";
         }
     }
 }
