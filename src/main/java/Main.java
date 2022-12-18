@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
 public class Main {
     public static void main(String[] argv) {
 
@@ -18,22 +17,25 @@ public class Main {
         }
         System.out.println(cage);
 
-        String classes = new String();
-        String names = new String();
-        String types = new String();
-        String voices = new String();
-        int count;
-        ZooInterface zoo = new Zoo();
+
+        ZooInterface zoo = new Zoo(9);
         zoo.createCages();
         System.out.println(zoo);
         zoo.addAnimal(animal);
         System.out.println(zoo);
+        zoo.addCage(cage);
+        System.out.println(zoo);
         zoo.walk();
-        classes = zoo.getAnimalClasses();
-        names = zoo.getAnimalNames();
-        types = zoo.getAnimalTypes();
-        voices = zoo.getAnimalVoices();
-        count = zoo.getRealCount();
-        System.out.println(classes + " " + names + " " + types + " " + voices + " " + count);
+        Set u = new HashSet<>();
+        u = zoo.getUniqueTypes();
+        System.out.println(u);
+        String amount;
+        amount = zoo.getTypesAmount();
+        System.out.println(amount);
+
+
+        VisualClass zooV = new VisualClass();
+        zooV.createGUI(zoo);
+
     }
 }

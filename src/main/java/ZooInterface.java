@@ -1,14 +1,19 @@
+import java.util.HashMap;
+import java.util.Set;
+
 public interface ZooInterface  {
-    void walk();
+    String walk();
     void addCage(Cage newcage);
     void createCages();
     int getMaxCount();
     int getRealCount();
-    void setCount(int _count);
     void addAnimal(Animal newanimal);
-    String getAnimalNames();
-    String getAnimalTypes();
-    String getAnimalClasses();
-    String getAnimalVoices();
+    String getAnimalName(int index);
+    String getAnimalType(int index);
+    String getAnimalClass(int index);
+    String getAnimalVoice(int index);
+    String getTypesAmount();
+    Set getUniqueTypes();
+
 
 }
