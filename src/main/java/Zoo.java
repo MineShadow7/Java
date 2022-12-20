@@ -116,24 +116,23 @@ public class Zoo implements ZooInterface, Serializable {
     }
 
     public String getTypesAmount(){
-        HashMap<Integer, String> amount = new HashMap<>();
+        HashMap<Integer, String> PredatorAmount = new HashMap<>();
+        HashMap<Integer, String> HerbivoreAmount = new HashMap<>();
         int countP = 0;
         int countH = 0;
         String result;
         for (Cage c: ZooCages) {
             if(!c.getisEmpty()){
                 if(c.animal.TypeAnimal == AnimalType.Predator){
-                    amount.remove(countP, c.animal.getType());
                     countP += 1;
-                    amount.put(countP, c.animal.getType());
                 }else{
-                    amount.remove(countH, c.animal.getType());
                     countH += 1;
-                    amount.put(countH, c.animal.getType());
                 }
             }
         }
-        result = amount.toString();
+        PredatorAmount.put(countP, AnimalType.Predator.name());
+        HerbivoreAmount.put(countH, AnimalType.Herbivore.name());
+        result = PredatorAmount.toString() + HerbivoreAmount.toString();
         return result;
     }
 
