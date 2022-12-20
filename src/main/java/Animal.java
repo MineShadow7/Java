@@ -1,3 +1,5 @@
+import java.io.Serializable;
+
 enum AnimalType {Predator, Herbivore}
 enum AnimalNames {
     Name1("Gold"),
@@ -29,7 +31,7 @@ enum AnimalClasses {
         return text;
     }
 }
-public class Animal {
+public class Animal implements Serializable {
     public String name, animalclass, voice;
     public AnimalType TypeAnimal;
 
@@ -122,10 +124,10 @@ public class Animal {
     @Override
     public String toString() {
         return "Animal{" +
-                "name='" + name + '\'' +
-                ", type='" + TypeAnimal + '\'' +
-                ", animalclass='" + animalclass + '\'' +
-                ", voice='" + voice + '\'' +
+                "name='" + getName() + '\'' +
+                ", type='" + getType() + '\'' +
+                ", animalclass='" + getAnimalclass() + '\'' +
+                ", voice='" + getVoice() + '\'' +
                 '}';
     }
 }

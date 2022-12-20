@@ -1,8 +1,11 @@
+import java.io.Serializable;
 import java.util.*;
+import java.util.Comparator;
 
-public class Zoo implements ZooInterface {
+public class Zoo implements ZooInterface, Serializable {
     private int size;
     private Cage[] ZooCages;
+    transient private static Comparator<Cage> ascEmpty;
 
 
     Zoo(int _size){
@@ -10,7 +13,17 @@ public class Zoo implements ZooInterface {
         ZooCages = new Cage[size];
     }
 
-    public  void createCages(){
+
+    static {
+        ascEmpty = new Comparator<Cage>() {
+            @Override
+            public int compare(Cage c1, Cage c2) {
+                return Boolean.compare(c1.getisEmpty(), c2.getisEmpty());
+            }
+        };
+    }
+
+    public void createCages(){
         for(int i = 0; i < size; i++){
             ZooCages[i] = new Cage();
         }
@@ -19,6 +32,10 @@ public class Zoo implements ZooInterface {
     @Override
     public int getMaxCount() {
         return size;
+    }
+    public void setNewSize(Zoo newcages){
+        size = newcages.getMaxCount();
+        ZooCages = newcages.ZooCages;
     }
     public int getRealCount() {
         int realsize = 0;
@@ -120,6 +137,9 @@ public class Zoo implements ZooInterface {
         return result;
     }
 
+    public void sort(){
+        Arrays.sort(ZooCages, ascEmpty);
+    }
     @Override
     public String walk() {
         String msg = "You walk in the Zoo and get near the cages. You hear voices: |";
@@ -140,13 +160,22 @@ public class Zoo implements ZooInterface {
             for (int i = 0; i < ZooCages.length; i++){
                 newcages[i] = ZooCages[i];
             }
-
             newcages[ZooCages.length] = cage;
             this.ZooCages = newcages;
-
         }else{
             throw new RuntimeException("Cannot Add more cages then Max size: " + size);
         }
+    }
+
+    public void removeCage(int index){
+        Cage[] newcages = new Cage[size - 1];
+        for (int i = 0; i < size - 1; i++)
+        {
+            newcages[i] = ZooCages[i];
+        }
+        size -= 1;
+        ZooCages = newcages;
+        this.sort();
     }
 
     @Override

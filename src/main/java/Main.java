@@ -25,6 +25,7 @@ public class Main {
         System.out.println(zoo);
         zoo.addCage(cage);
         System.out.println(zoo);
+        zoo.sort();
         zoo.walk();
         Set u = new HashSet<>();
         u = zoo.getUniqueTypes();

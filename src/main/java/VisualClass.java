@@ -12,8 +12,47 @@ public class VisualClass extends JFrame {
     JButton buttonName = new JButton("Get Animal Name");
     JButton buttonType = new JButton("Get Animal Type");
     JButton buttonClass = new JButton("Get Animal Class");
+    JButton buttonAddCage = new JButton("Add Cage from Fields");
+    JButton buttonRemoveCage = new JButton("Remove Cage by Index");
+    JButton buttonSaveJSON = new JButton("Save To JSON");
+    JButton buttonSaveBIN = new JButton("Save To BIN");
+    JButton buttonReadBIN = new JButton("Read From BIN");
+    JButton buttonReadJSON = new JButton("Read From JSON");
+    JTextField nameField = new JTextField();
+    JComboBox typeField = new JComboBox();
+    JTextField classField = new JTextField();
+    JTextField voiceField = new JTextField();
+    String typesList[] = {"Herbivore", "Predator"};
+    JLabel[] cages;
 
+    private void initTypesList(){
+        typeField = new JComboBox<>(typesList);
+    }
+
+    private void addCages(ZooInterface zoo, JPanel components){
+        int size = zoo.getMaxCount();
+        cages = new JLabel[size];
+        for(int i = 0; i < size; i++){
+            cages[i] = new JLabel("Default Text");
+            cages[i].setText((i + 1) + " " + zoo.getAnimalName(i) + " " + zoo.getAnimalClass(i)  + " " + zoo.getAnimalType(i)  + " " + zoo.getAnimalVoice(i));
+            components.add(cages[i]);
+        }
+    }
+    private void removeCages(JPanel components){
+        components.removeAll();
+        gridLayout.layoutContainer(components);
+    }
+    private void removeCageByIndex(ZooInterface zoo, JPanel components, int index) {
+        zoo.removeCage(index);
+        for(int i = 0; i < zoo.getMaxCount() + 1; i++){
+            components.remove(cages[i]);
+            gridLayout.layoutContainer(components);
+        }
+        addCages(zoo, components);
+        gridLayout.layoutContainer(components);
+    }
     public void addComponentsToPane(final Container pane, ZooInterface zoo) {
+        initTypesList();
         selectedCage = new JComboBox();
         for(int i = 0; i < zoo.getMaxCount(); i++) {
             selectedCage.addItem(i + 1);
@@ -32,12 +71,13 @@ public class VisualClass extends JFrame {
         JLabel l = new JLabel();
         Dimension labelsize = l.getPreferredSize();
         components.setPreferredSize(new Dimension((int) (labelsize.getWidth() * 2.5) + 60, (int) (labelsize.getHeight() * 3.5) + 60 * 2));
-        for(int i = 0; i < zoo.getMaxCount(); i++){
-            components.add(new JLabel((i + 1) + " " + zoo.getAnimalName(i) + " " + zoo.getAnimalClass(i)  + " " + zoo.getAnimalType(i)  + " " + zoo.getAnimalVoice(i)));
-        }
 
+        addCages(zoo, components);
 
-        //controls.add(new JLabel(zoo.walk()));
+        controls.add(buttonSaveBIN);
+        controls.add(buttonSaveJSON);
+        controls.add(buttonReadBIN);
+        controls.add(buttonReadJSON);
         controls.add(buttonWalk);
         controls.add(buttonUniqueTypes);
         controls.add(buttonAmountTypes);
@@ -45,7 +85,65 @@ public class VisualClass extends JFrame {
         controls.add(buttonType);
         controls.add(buttonClass);
         controls.add(selectedCage);
+        controls.add(buttonRemoveCage);
+        controls.add(buttonAddCage);
+        controls.add(nameField);
+        controls.add(typeField);
+        controls.add(classField);
+        controls.add(voiceField);
 
+        buttonSaveBIN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SaveDataClass save = new SaveDataClass();
+                save.writeToBin((Zoo) zoo);
+                outputs.add(new JLabel("Done saving to BIN"));
+                gridLayout.layoutContainer(outputs);
+            }
+        });
+
+        buttonSaveJSON.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SaveDataClass save = new SaveDataClass();
+                save.writeToJSON((Zoo) zoo);
+                outputs.add(new JLabel("Done saving to JSON"));
+                gridLayout.layoutContainer(outputs);
+            }
+        });
+
+        buttonReadBIN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SaveDataClass save = new SaveDataClass();
+                ZooInterface newzoo;
+                newzoo = save.ReadFromBin();
+                selectedCage.removeAllItems();
+                removeCages(components);
+                addCages(newzoo, components);
+                zoo.setNewSize((Zoo) newzoo);
+                for(int i = 0; i < zoo.getMaxCount(); i++) {
+                    selectedCage.addItem(i + 1);
+                }
+                gridLayout.layoutContainer(components);
+            }
+        });
+        buttonReadJSON.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SaveDataClass save = new SaveDataClass();
+                ZooInterface newzoo;
+                newzoo = save.ReadFromJSON();
+                selectedCage.removeAllItems();
+                removeCages(components);
+                addCages(newzoo, components);
+                zoo.setNewSize((Zoo) newzoo);
+                for(int i = 0; i < zoo.getMaxCount(); i++) {
+                    selectedCage.addItem(i + 1);
+                }
+                gridLayout.layoutContainer(components);
+            }
+        });
         buttonName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,6 +204,52 @@ public class VisualClass extends JFrame {
                 zooWalk.setText(zoo.walk());
                 outputs.add(zooWalk);
                 gridLayout.layoutContainer(outputs);
+            }
+        });
+
+        buttonAddCage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name, aclass, voice;
+                AnimalType type;
+                int typeindex = 0;
+                name = nameField.getText();
+                typeindex = typeField.getSelectedIndex();
+                aclass = classField.getText();
+                voice = voiceField.getText();
+                if (typeindex == 0){
+                    type = AnimalType.Herbivore;
+                }else{
+                    type = AnimalType.Predator;
+                }
+                Cage newcage = new Cage();
+                Animal newanimal = new Animal(name, type, aclass, voice);
+                newcage.setIsEmpty(true);
+                try {
+                    newcage.addAnimal(newanimal);
+                } catch (CageFullException ex) {
+                    throw new RuntimeException(ex);
+                }
+                removeCages(components);
+                zoo.addCage(newcage);
+                addCages(zoo, components);
+                selectedCage.addItem(zoo.getMaxCount());
+                gridLayout.layoutContainer(components);
+            }
+        });
+        buttonRemoveCage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndex = selectedCage.getSelectedIndex();
+                int removableindex = zoo.getMaxCount();
+                if(zoo.getMaxCount() != 1) {
+                    removeCageByIndex(zoo, components, selectedIndex);
+                    selectedCage.removeItem(removableindex);
+                }else{
+                    outputs.add(new JLabel("Must have at least 1 Cage in Zoo"));
+                    gridLayout.layoutContainer(outputs);
+                }
+                gridLayout.layoutContainer(components);
             }
         });
 

@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
-public interface ZooInterface  {
+public interface ZooInterface {
     String walk();
     void addCage(Cage newcage);
     void createCages();
@@ -14,6 +15,7 @@ public interface ZooInterface  {
     String getAnimalVoice(int index);
     String getTypesAmount();
     Set getUniqueTypes();
-
-
+    void sort();
+    void removeCage(int index);
+    void setNewSize(Zoo newcages);
 }

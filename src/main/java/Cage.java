@@ -1,10 +1,10 @@
-import static java.lang.System.*;
+import java.io.Serializable;
 import java.util.Random;
 
-public class Cage {
+public class Cage implements Serializable {
     public Animal animal;
     public boolean isEmpty;
-    private Random random = new Random();
+    transient private Random random = new Random();
 
     public Cage() {
         isEmpty = random.nextBoolean();
