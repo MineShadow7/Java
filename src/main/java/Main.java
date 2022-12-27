@@ -7,7 +7,6 @@ public class Main {
         Animal animal = new Animal();
         Cage cage = new Cage();
         cage.setIsEmpty(true);
-        System.out.println(cage);
         animal.GenerateStats(rand.nextInt(5), rand.nextInt(2), rand.nextInt(3));
         System.out.println(animal);
         try {

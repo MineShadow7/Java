@@ -37,7 +37,7 @@ public class Cage implements Serializable {
 
     @Override
     public String toString() {
-        if (!isEmpty) {
+        if (!getisEmpty()) {
             return "Cage{" +
                     "random=" + animal.toString() +
                     '}';
